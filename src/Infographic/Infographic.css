@@ -1,0 +1,31 @@
+.info{
+    color: var(--primary);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+}
+.typing{
+    font-family: 'Pixy';
+    font-size: xx-large;
+    overflow: hidden;
+    width: 0;
+    border-right: 2px solid var(--primary);
+    white-space: nowrap;
+    animation: typing 4s steps(30,end) forwards,
+                blink 0.7s step-end infinite;
+}
+@keyframes typing{
+    from{
+        width: 0;
+    }
+    to{
+        width: 21ch;
+    }
+}
+@keyframes blink{
+    50%{
+        border-color: transparent;
+    }
+}

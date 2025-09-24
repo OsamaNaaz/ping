@@ -1,0 +1,35 @@
+.home{
+    display: flex;
+    flex-direction: column;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    height: 100%;
+    flex: 1;
+}
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    background-color: var(--primary);
+}
+.home-title{
+    font-family: 'Pixy';
+    font-size:'500px';
+}
+.infographic{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.row{
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+}
+.login-container{
+    display: flex;
+    /* align-self: flex-end;
+    height: 100vh; */
+    /* margin:auto; */
+}

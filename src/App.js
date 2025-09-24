@@ -1,24 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
+import Home from './Home/Home.js';
+import { theme } from './theme.js';
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const rootStyle = document.querySelector(':root');
+    rootStyle.style.setProperty('height','100%')
+    Object.entries(theme).forEach(([key, value]) => {
+      root.style.setProperty(`--${key}`, value);
+    });
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Home></Home>
   );
 }
 
