@@ -18,6 +18,11 @@
     outline: none;
     font-family:'Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif';
 }
+
+.input-field-error{
+    border: 1px solid red;
+    box-shadow: 0 0 5px red;
+}
 .signUp-container {
   max-height: 0;
   opacity: 0;
@@ -27,6 +32,7 @@
   flex-direction: column;
   gap:15px;
 }
+
 
 .signUp-container.show {
   max-height: 200px;
