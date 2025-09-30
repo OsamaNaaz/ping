@@ -1,0 +1,26 @@
+.chat-preview{
+    height: 30px;
+    border: 0 5px 0 0;
+    border-bottom-color: black;
+    display: flex;
+    flex-direction: row;
+    border-bottom-style: solid;
+    padding:20px;
+    align-content: center;
+}
+.chat-preview:hover{
+    cursor: pointer;
+    background-color: grey;
+}
+.user-avatar{
+    border-radius: 120%;
+    height: 130%;
+    display: flex;
+    align-self: center;
+}
+.user-name{
+    font-family: monospace;
+    align-self: center;
+    padding: 10px;
+    font-weight: bold;
+}

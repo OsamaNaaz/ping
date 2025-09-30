@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './Login.css'
-export default function Login(){
+export default function Login(props){
     const [signUp, setSignUp] = useState(false);
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -22,9 +22,13 @@ export default function Login(){
                     username: username,
                     password: password
                 })
-            }).then(res => {
+            }).then(async res => {
                 if(res.status == 200){
                     setInvalidCredCheck(false);
+                    const data = await res.json();
+                    console.log(data);
+                    localStorage.setItem("user", JSON.stringify(data));
+                    props.setUser(data);
                 }
                 else{
                     setInvalidCredCheck(true);

@@ -1,0 +1,7 @@
+.chats{
+    background-color: darkgray;
+    height:100%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+}

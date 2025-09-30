@@ -3,6 +3,7 @@ import './App.css';
 import Home from './Home/Home.js';
 import { theme } from './theme.js';
 import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   useEffect(() => {
@@ -14,7 +15,11 @@ function App() {
     });
   }, []);
   return (
-    <Home></Home>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Home></Home>}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
