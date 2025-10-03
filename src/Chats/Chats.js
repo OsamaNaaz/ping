@@ -1,101 +1,49 @@
 import ChatPreview from '../ChatPreview/ChatPreview'
 import './Chats.css'
-export default function Chats(){
-    const users = [
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-},
-{
-  "username": "john_doe",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "mypassword123",
-  "avatarUrl": "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
-  "bio": "Just another chatter!",
-  "status": "online",
-  "roles": ["user"],
-  "twoFactorEnabled": false
-}
-    ]
+import ChatBox from '../ChatBox/ChatBox'
+import { useState, useEffect } from 'react';
+import Loading from '../Loading/Loading';
+export default function Chats({onSelectChat,conversations}){
+   const [users, setUsers] = useState([]);
+      const [loading, setLoading] = useState(true);
+  const fetchUsers = async () => {
+    try{
+      const usernames = conversations.map(conversation => conversation.participant);                
+      fetch('http://localhost:9000/getUsers',{
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({usernames: usernames})
+      }).then(async res => {
+        const data = await res.json();
+        const usersWithConversations = data.map(user => {
+          const conversation = conversations.find(conversation => conversation.participant === user.username);
+          console.log(conversation);
+          return {
+            ...user,
+            conversationId: conversation.id
+          }
+        });
+        setUsers(usersWithConversations);
+        setLoading(false);
+      });
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+    useEffect(() => {
+        fetchUsers();
+    },[]);
+
     return(
         <div className="chats">
-            {users.map(user => (
-                <ChatPreview user={user} key={user.username}></ChatPreview>
-            ))}
+          {loading ? <Loading></Loading>:
+            (users.map(user => (
+                <ChatPreview user={user} key={user.username} onClick={() => onSelectChat(user)}></ChatPreview>
+            )))
+          }
         </div>
     )
 }

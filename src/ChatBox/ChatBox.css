@@ -1,0 +1,119 @@
+.chat-box{
+    height: 90vh;
+    width: 100vw;
+    background-color: gray;
+    display: flex;
+    flex-direction: column; 
+    background-image: url('../assets/pics/matrix.png');
+}
+.chat-header{
+    background-color: rgba(238, 239, 239, 0.8);
+    display: flex;
+    flex-direction: row;
+    padding: 10px 30px;
+    border-radius: 40px;
+    margin: 20px;
+    align-items: center;
+}
+.chat-body{
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow-y: auto;
+}
+.loading-chat{
+    background-color:rgba(255, 255, 255, 0.5);
+    width:10%;
+    height:10% !important;
+    margin:auto;
+    flex:none;
+}
+.user-avatar-chat-box{
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+.chat-input{
+    display: flex;
+    flex-direction: row;
+    margin-top: auto;
+    align-items: center;
+}
+.message-input{
+    flex: 1;
+    transition: flex 0.3s ease;
+    padding: 20px;
+    border-radius: 30px;
+    border:none;
+    align-self: flex-end;
+    width:100%;
+    margin:20px;
+    box-shadow: 5px 5px 10px gray;
+    outline:none;
+}
+.send-button{
+    margin-right:20px;
+    opacity: 0;
+    height:40px;
+    transition: all 0.3s ease-in-out;
+    width: 0px;
+    color: var(--primary);
+    visibility: hidden;
+    overflow: hidden;
+}
+.send-button:hover{
+    cursor: pointer;
+    color: rgb(134, 134, 134);
+}
+.send-button.visible{
+    opacity: 1;
+    width: 40px;
+    pointer-events: auto;
+    visibility:visible;
+    border-radius: 50%;
+}
+.placeholder-container,.chat-container{
+    display: flex;
+    flex-direction: column;
+    height:100%;
+    width: 100%;
+    font-size: 2em;
+}
+.placeholder-container{
+
+    justify-content: center;
+    align-items: center;
+}
+.placeholder{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    width: 50%;
+    font-family: 'Pixy';
+    color: white;
+    background-color: rgba(63, 63, 65, 0.8);
+    border-radius: 50px;
+}
+.hidden{
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+.visible{
+    opacity: 1;
+    transform: translateY(0px);
+    pointer-events: auto;
+}
+.typing-indicator{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Pixy';
+    color: white;
+    background-color: rgba(63, 63, 65, 0.8);
+    border-radius: 50px;
+    margin: 20px;
+    padding: 20px;
+}

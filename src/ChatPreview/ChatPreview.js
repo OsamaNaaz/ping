@@ -1,12 +1,13 @@
 import './ChatPreview.css'
-export default function ChatPreview(props){
-    const sampleUser = props.user;
+export default function ChatPreview({user, onClick}){
     return(
-        <div className="chat-preview">
-            <img src={sampleUser.avatarUrl} alt="User Avatar" className='user-avatar'></img>
+        <div className="chat-preview" onClick={onClick}>
+            <img src={user.avatarUrl} alt="User Avatar" className='user-avatar'></img>
             <span className='user-name'>
-                {sampleUser.name}
+                {user.name}<br/>
+                <span className={`user-status ${user.status}`}>{user.status}</span>
             </span>
+            <br/>            
         </div>
     )
 }

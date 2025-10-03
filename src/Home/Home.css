@@ -21,3 +21,6 @@
 .login-container{
     display: flex;
 }
+.main-container{
+    width: 100vw;
+}

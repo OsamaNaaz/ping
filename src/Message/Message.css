@@ -1,0 +1,24 @@
+.message{
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+.message-box{
+    padding:20px;
+    font-size:medium;
+    max-width: 50%;
+    font-family: monospace;
+    word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+.right{
+    color:black;
+    background-color: white;
+    align-self: flex-end;
+}
+.left{
+    align-self: flex-start;
+    background-color: black;
+    color:white;
+}

@@ -4,12 +4,14 @@ import Infographic from '../Infographic/Infographic.js';
 import Main from '../Main/Main.js';
 import Header from '../Header/Header.js';
 import { useState } from 'react';
+import Profile from '../Profile/Profile.js';
 
 export default function Home(){
     const [user, setUser] = useState(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null)
+    const [showProfile, setShowProfile] = useState(false);
     return (
         <div className="home">
-            <Header user={user}></Header>
+            <Header onClickProfile={() => setShowProfile(true)} user={user}></Header>
             <div className='row' >
                 { !user && <div className='infographic'>
                     <Infographic></Infographic>
@@ -21,6 +23,7 @@ export default function Home(){
                     <Main></Main>
                 </div>}
             </div>
+            {showProfile && <Profile></Profile>}
         </div> 
     )
 }

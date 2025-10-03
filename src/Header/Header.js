@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
 import { logOut } from '../utils';
 
-export default function Header({user}){
+export default function Header({user, onClickProfile}){
     const dropdownRef = useRef(null);
     useClickOutside(dropdownRef, () => setOpenDropDown(false));
     const [openDropDown, setOpenDropDown] = useState(false);
@@ -12,11 +12,11 @@ export default function Header({user}){
         <div className={`header ${user ? "logged-in-header" : ""}`}>
             <h1 className="home-title">PING!</h1>
             <div className="user-logo" ref={dropdownRef}>
-            {user && (<img src={userLogo}  alt="User Logo" onClick={(e) => { setOpenDropDown(!openDropDown); }}></img>)}
+            {user && (<img src={user.avatarUrl ? user.avatarUrl : userLogo}  alt="User Logo" onClick={(e) => { setOpenDropDown(!openDropDown); }}></img>)}
             {openDropDown && (<div className="dropdown"> 
                 <ul>
                     <li>Account Settings</li>
-                    <li>Profile</li>
+                    <li onClick={onClickProfile}>Profile</li>
                     <li onClick={() => logOut()}>Logout</li>
                 </ul>
             </div>
