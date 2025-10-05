@@ -94,6 +94,7 @@ app.post('/register', async (req, res) => {
 });
 app.post('/getConversations', async(req,res) => {
     const {username} = req.body;
+    console.log(req.body);
     await Conversation.find({
         participants: { $all: [username] }
     }).then(data => {
@@ -126,8 +127,8 @@ app.post('/getMessages', async(req,res) => {
 app.post('/getUsers', async(req,res) => {
     const {usernames} = req.body;
     try{
-    const data = await User.find({username: {$in: usernames}});
-    const users = data.map(user => {
+        const data = await User.find({username: {$in: usernames}});
+        const users = data.map(user => {
         return{
             username: user.username,
             name: user.name,
@@ -158,6 +159,47 @@ app.post('/sendMessage', async(req,res) => {
         res.json(err);  
     })
 })
+app.post('/searchUsers', async(req,res) => {
+    const {searchQuery} = req.body;
+    await User.find({
+        $or: 
+        [{username: {$regex: searchQuery, $options: 'i'}},
+        {name: {$regex: searchQuery, $options: 'i'}},
+        {email: {$regex: searchQuery, $options: 'i'}}
+        ]
+    }).then(data => {
+        res.json(data);
+    }).catch(err => {
+        res.json(err);  
+    })
+}
+)
+app.post('/createConversation', async(req,res) => {
+    const {participants} = req.body;
+    const sortedParticipants = [...participants].sort();
+    try{
+        const existingConversation = await Conversation.findOne({
+            participants: sortedParticipants
+        })
+        if(existingConversation){
+            return res.json(existingConversation);
+        }
+    }
+    catch(err){
+        if(err){
+            return res.json(err);
+        }
+    }
+    const newConversation = new Conversation({
+        participants: sortedParticipants
+    });
+    await newConversation.save().then(data => {
+        res.json(data);
+    }).catch(err => {
+        res.json(err);
+    })
+})
+
 io.on('connection', (socket) => {
     socket.on('joinConversation', (conversationId) => {
         console.log(`User joined conversation ${conversationId}`);

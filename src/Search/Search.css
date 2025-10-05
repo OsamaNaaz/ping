@@ -1,0 +1,23 @@
+.search-bar{
+    padding: 20px;
+    font-family: monospace;
+    outline: none;
+    width: 70%;
+    border-style: solid;
+}
+.search-container{
+    margin:2px;
+    display:flex;
+    flex-direction: row;
+}
+.search-icon-container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding:5%;
+}
+.search-icon{
+    height:100%;
+    width:30px;
+    cursor: pointer;
+}

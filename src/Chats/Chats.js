@@ -3,9 +3,30 @@ import './Chats.css'
 import ChatBox from '../ChatBox/ChatBox'
 import { useState, useEffect } from 'react';
 import Loading from '../Loading/Loading';
-export default function Chats({onSelectChat,conversations}){
-   const [users, setUsers] = useState([]);
-      const [loading, setLoading] = useState(true);
+import Search from '../Search/Search';
+import { createConversation } from '../api';
+import { currentUser } from '../utils';
+export default function Chats({onSelectChat,newChat,conversations}){
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchValue, setSearchValue] = useState('');
+
+  const createConversation = async (searchedUser) => {
+    const user = currentUser();
+    if(user.username === searchedUser.username)
+      return;
+    if(!user || !searchedUser)
+      return;
+    const participants = [user.username, searchedUser.username];
+    try{
+      const conversation = await createConversation(participants);
+      newChat(conversation);
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+        
   const fetchUsers = async () => {
     try{
       const usernames = conversations.map(conversation => conversation.participant);                
@@ -39,8 +60,10 @@ export default function Chats({onSelectChat,conversations}){
 
     return(
         <div className="chats">
+          <Search onSearch={setSearchValue} selectedUser={createConversation}></Search>
           {loading ? <Loading></Loading>:
-            (users.map(user => (
+            (
+              users.filter(user => user.username.toLowerCase().includes(searchValue.toLowerCase())).map(user => (
                 <ChatPreview user={user} key={user.username} onClick={() => onSelectChat(user)}></ChatPreview>
             )))
           }

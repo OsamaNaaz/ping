@@ -1,4 +1,4 @@
-.profile-overlay{
+.search-user-overlay{
     position: fixed;
     top: 0;
     left: 0;
@@ -11,12 +11,12 @@
     justify-content: center;
 }
 
-.profile-pop-up{
+.search-user-pop-up{
     background-color: white;
     padding: 30px;
     border-radius: 20px;
-    min-width: 500px;
     min-height:500px;
+    min-width:500px;
     display:flex;
     flex-direction: column;
     font-family: monospace;
@@ -24,7 +24,7 @@
     transform: scale(0);
     pointer-events: none;
 }
-.profile-pop-up.visible{
+.search-user-pop-up.visible{
     transform: scale(1);
     pointer-events: auto;
 }
@@ -42,13 +42,14 @@
     background-color: rgba(120, 10, 10, 0.5);
     color:black;
 }
-.profile-header{
+.search-user-header{
     display: flex;
     justify-content: center;
 }
-.profile-body{
-
-}
-.item{
-    
+.search-bar-pop-up{
+    padding: 20px;
+    font-family: monospace;
+    outline: none;
+    width: 91.5%;
+    border-style: solid;
 }

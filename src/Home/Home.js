@@ -23,7 +23,7 @@ export default function Home(){
                     <Main></Main>
                 </div>}
             </div>
-            {showProfile && <Profile></Profile>}
+            {showProfile && <Profile user={user} closeProfile={() => setShowProfile(false)}></Profile>}
         </div> 
     )
 }
