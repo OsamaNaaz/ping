@@ -9,14 +9,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color:white;
 }
 
 .profile-pop-up{
-    background-color: white;
+    background-color: var(--primary);
     padding: 30px;
     border-radius: 20px;
-    min-width: 500px;
-    min-height:500px;
+    min-width: 600px;
     display:flex;
     flex-direction: column;
     font-family: monospace;
@@ -40,15 +40,30 @@
 }
 .close-button:hover{
     background-color: rgba(120, 10, 10, 0.5);
-    color:black;
+    color:white;
 }
 .profile-header{
     display: flex;
     justify-content: center;
 }
 .profile-body{
-
+    color: white;
 }
-.item{
-    
+.edit-button{
+    background-color: green;
+}
+.edit-body{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+}
+.edit-button:hover{
+    background-color: rgba(55, 63, 177, 0.5);
+    color:white;
+}
+.profile-footer{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
 }

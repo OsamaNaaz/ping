@@ -7,6 +7,7 @@
     justify-content: center;
     flex-direction: column;
     gap:15px;
+    box-sizing: border-box;
 }
 .input-field{
     align-self: flex-end;
@@ -62,6 +63,7 @@
     justify-content: center;
     flex-direction: column;
     font-size: medium;
+    color: white;
 }
 .newAccount:hover{
     cursor: pointer;
@@ -79,4 +81,10 @@
 .forgot-password:hover{
     cursor: pointer;
     text-decoration: underline;
+}
+.password-container{
+    /* max-width: 0; */
+}
+.input-container{
+    max-width: min-content;
 }

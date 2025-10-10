@@ -11,8 +11,8 @@ export default function Header({user, onClickProfile}){
     return(
         <div className={`header ${user ? "logged-in-header" : ""}`}>
             <h1 className="home-title">PING!</h1>
-            <div className="user-logo" ref={dropdownRef}>
-            {user && (<img src={user.avatarUrl ? user.avatarUrl : userLogo}  alt="User Logo" onClick={(e) => { setOpenDropDown(!openDropDown); }}></img>)}
+            {user && (<div className="user-logo" ref={dropdownRef}>
+            <img src={user.avatarUrl ? user.avatarUrl : userLogo}  alt="User Logo" onClick={(e) => { setOpenDropDown(!openDropDown); }}></img>
             {openDropDown && (<div className="dropdown"> 
                 <ul>
                     <li>Account Settings</li>
@@ -21,7 +21,7 @@ export default function Header({user, onClickProfile}){
                 </ul>
             </div>
         )}
-        </div>
+        </div>)}
         </div>
     )
 }

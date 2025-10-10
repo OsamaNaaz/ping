@@ -4,7 +4,7 @@ import ChatBox from '../ChatBox/ChatBox'
 import { useState, useEffect } from 'react';
 import Loading from '../Loading/Loading';
 import Search from '../Search/Search';
-import { createConversation } from '../api';
+import { createConversationApi } from '../api';
 import { currentUser } from '../utils';
 export default function Chats({onSelectChat,newChat,conversations}){
   const [users, setUsers] = useState([]);
@@ -19,8 +19,10 @@ export default function Chats({onSelectChat,newChat,conversations}){
       return;
     const participants = [user.username, searchedUser.username];
     try{
-      const conversation = await createConversation(participants);
-      newChat(conversation);
+      const conversation = await createConversationApi(participants);
+                console.log(conversation);
+
+      onSelectChat({...searchedUser, conversationId: conversation._id});
     }
     catch(err){
       console.log(err);

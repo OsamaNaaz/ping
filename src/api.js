@@ -1,5 +1,5 @@
 const apiUrl = 'http://localhost:9000';
-export async function createConversation(participants){
+export async function createConversationApi(participants){
     try{
         const response = await fetch(apiUrl+'/createConversation',{
             method: 'POST',
@@ -31,3 +31,24 @@ export async function getConversations(user){
         console.log(err);
     }
 } 
+export async function updateUserApi(user){
+    try{
+        const response = await fetch(apiUrl+'/updateUser',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        });
+        if(!response.ok){
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to update user');
+        }
+        
+        const data = await response.json();
+        return {success: true, data};
+    }
+    catch(err){
+        return {success: false, error: err.message}; 
+    }
+}

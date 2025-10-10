@@ -82,9 +82,9 @@ app.post('/login', async(req,res) => {
 })
 
 app.post('/register', async (req, res) => {
-    const {username, email, password} = req.body;
+    const {username, email, password, name} = req.body;
     // const hash = await argon2.hash(password);
-    const newUser = new User({username, email, password});
+    const newUser = new User({username, email, password, name, avatarUrl: `https://ui-avatars.com/api/?name=${name.split(' ').join('+')}&background=random&size=128`});
     await newUser.save().then(data => {
         res.json(data);
     }).catch(err => {
@@ -174,6 +174,38 @@ app.post('/searchUsers', async(req,res) => {
     })
 }
 )
+app.post('/updateUser', async(req,res) => {
+    const {_id, username, name, email, bio="", password, currentPassword} = req.body;
+    try{
+        if(currentPassword === undefined || currentPassword.trim() === ""){
+            throw new Error("Current password is required");
+        }
+        const usernameDoc = await User.findOne({username: username, _id: {$ne: _id}});
+        if(usernameDoc){
+            throw new Error("Username already taken");
+        }
+        const emailDoc = await User.findOne({email: email, _id: {$ne: _id}});
+        if(emailDoc){
+            throw new Error("Email already taken");
+        }
+        const user = await User.findById(_id);
+        if(!user){
+            throw new Error("User not found");
+        } 
+        if(user.password.trim() !== currentPassword.trim()){
+            throw new Error("Current password is incorrect");
+        }
+        if(password !== undefined && password.trim() !== ""){
+            user.password = password;
+        }
+        const updatedUser = await User.findOneAndUpdate({_id: _id}, {username: username, name: name, email: email, bio: bio}, {new: true});
+        res.json(updatedUser);
+    }
+    catch(err){
+        console.log(err);
+        res.status(400).json({error: err.message});
+    }
+})
 app.post('/createConversation', async(req,res) => {
     const {participants} = req.body;
     const sortedParticipants = [...participants].sort();

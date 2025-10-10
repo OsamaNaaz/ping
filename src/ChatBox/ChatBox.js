@@ -4,6 +4,7 @@ import { IoPaperPlane } from "react-icons/io5";
 import Message from '../Message/Message'
 import Loading from '../Loading/Loading';
 import io from 'socket.io-client';
+import Profile from '../Profile/Profile';
 
 const socket = io('http://localhost:9000');
 
@@ -14,6 +15,7 @@ export default function ChatBox({chat}){
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [typing, setTyping] = useState(false);
+    const [showUserProfile, setShowUserProfile] = useState(false);
     const [typingMessage, setTypingMessage] = useState({
         sender: '',
         text: ''
@@ -48,6 +50,7 @@ export default function ChatBox({chat}){
         setNewMessage('');
     }
     useEffect(() => {
+        console.log(chat);
         setMessages([]);
         setLoading(true);
         getChat();
@@ -109,8 +112,9 @@ export default function ChatBox({chat}){
     },[messages,typing])
     return(
         <div className="chat-box">
+            {showUserProfile && <Profile user={chat} closeProfile={() => setShowUserProfile(false)} allowEdit={false}></Profile>}
             {chat && <div className={`chat-container ${chat ? 'visible' : 'hidden'}`}>
-           <div className="chat-header">
+           <div className="chat-header" onClick={() => setShowUserProfile(true)}>
                 <img src={chat.avatarUrl} alt="User Avatar" className='user-avatar-chat-box'></img>
                 <span className='user-name'>
                     {chat.name}
@@ -122,7 +126,11 @@ export default function ChatBox({chat}){
                 {typing && <Message message={typingMessage}></Message>}
             </div>
             <div className='chat-input'>
-                <input type="text" placeholder="Type a message..." className="message-input" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}></input>
+                <input type="text" placeholder="Type a message..." className="message-input" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyDown={(e) => {
+                    if(e.key === 'Enter'){
+                        onSendMessage();
+                    }
+                }}></input>
                 <IoPaperPlane className={`send-button ${newMessage.trim() ? 'visible' : ''}`} onClick={onSendMessage}/>
             </div>
             </div>}

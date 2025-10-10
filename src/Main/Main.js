@@ -21,6 +21,7 @@ export default function Main(){
     
     const newChat = (conversation) => {
         conversations.push(conversation);
+        console.log(conversations)
         setActiveChat(conversation);
     }
 
