@@ -4,8 +4,8 @@ export default function ChatPreview({user, onClick}){
         <div className="chat-preview" onClick={onClick}>
             <img src={user.avatarUrl} alt="User Avatar" className='user-avatar'></img>
             <span className='user-name'>
-                {user.name}<br/>
-                <span className={`user-status ${user.status}`}>{user.status}</span>
+                {user.name} {user.hasNewMessage && <span className='new-message'>*</span>}<br/>
+                <span className={`user-status ${user.isOnline ? 'online' : 'offline'}`}>{user.status}</span>
             </span>
             <br/>            
         </div>

@@ -1,4 +1,3 @@
-import { set } from 'mongoose';
 import './SearchUser.css'
 import ChatPreview from '../ChatPreview/ChatPreview'
 import { useEffect, useState,useRef } from 'react';
@@ -40,6 +39,7 @@ export default function SearchUser({selectedUser, onClose}){
                     searchQuery: query
                 })
             }).then(res => res.json()).then(data => {
+                if(data.length > 0)
                 setUsersFound(data);
             })
         }
@@ -54,7 +54,7 @@ export default function SearchUser({selectedUser, onClose}){
                     <input placeholder="Search or start new chat" className="search-bar-pop-up" value={searchQuery} onChange={(e) => handleSearch(e.target.value)}></input>
                 </div>
                 {searchQuery !== '' && <div className='search-user-results'>
-                    {usersFound.map(user => {
+                    {usersFound?.map(user => {
                         return(
                             <div key={user.username} className='search-user-result'>
                                 <ChatPreview user={user} onClick={() => selectedUser(user)} key={user.username}></ChatPreview> 

@@ -4,6 +4,7 @@
     background-color: gray;
     display: flex;
     flex-direction: column; 
+    overflow-x: hidden;
     background-image: url('../assets/pics/matrix.png');
 }
 .chat-header{

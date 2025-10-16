@@ -5,7 +5,7 @@ import Message from '../Message/Message'
 import Loading from '../Loading/Loading';
 import io from 'socket.io-client';
 import Profile from '../Profile/Profile';
-
+import { socketJoin, socketOn } from '../socket';
 const socket = io('http://localhost:9000');
 
 export default function ChatBox({chat}){
@@ -21,6 +21,7 @@ export default function ChatBox({chat}){
         text: ''
     });
     const getChat = () =>{
+        console.log('Fetching messages for conversation:', chat.conversationId);
         try{
         fetch('http://localhost:9000/getMessages',{
             method: 'POST',
@@ -38,29 +39,28 @@ export default function ChatBox({chat}){
         }
     }
     const onSendMessage = () => {
+        if(newMessage.trim() === '' || !chat?.conversationId) return;
         const message = {
             "convId":chat.conversationId,
             "sender": user.username,
             "text": newMessage,
+            "recipient": chat.username,
             "timestamp": new Date().toISOString()
-
         }
+        socket.emit('test', {});
+        console.log('Sending message:', message);
         socket.emit('sendMessage', message);
         setMessages([...messages, message]);
         setNewMessage('');
     }
     useEffect(() => {
-        console.log(chat);
         setMessages([]);
         setLoading(true);
-        getChat();
         if (!chat?.conversationId) return;
-            socket.emit('joinConversation', chat.conversationId);
-        socket.on('receiveMessage', (message) => {
-            // if(message.convId !== chat.conversationId) return;
-            if(message.sender !== user.username)
-                setMessages((prevMessages) => [...prevMessages, message]);
-        });
+        getChat();
+        console.log('Setting up chat listeners for conversation:', chat.conversationId);
+        socketJoin(chat.conversationId);
+       
         socket.on('typing', (data) => {
             if(data.conversationId !== chat.conversationId) return;
             if(data.username == chat.username){
@@ -83,10 +83,17 @@ export default function ChatBox({chat}){
             if(data.participant !== user.username)
             setTyping(false);
         });
+        socketOn('receiveMessage', (message) => {
+            if(message.convId !== chat.conversationId) return;
+            if(message.sender !== user.username)
+                setMessages((prevMessages) => [...prevMessages, message]);
+        });
         return () => {
-            socket.off('receiveMessage');
-            socket.off('typing');
-            socket.off('stopTyping');
+            
+            // socket.off('receiveMessage');
+            // socket.off('typing');
+            // socket.off('stopTyping');
+            // socket.emit('leaveConversation', chat.conversationId);
             setTyping(false);
             setTypingMessage({
                 sender: '',

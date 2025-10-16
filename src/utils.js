@@ -1,5 +1,8 @@
 import { usernameRegex, passwordRegex, emailRegex, nameRegex } from './constants.js';
+import io from 'socket.io-client';
+const socket = io('http://localhost:9000');
 export function logOut () {
+    socket.emit('disconnectUser', currentUser().username);
     localStorage.removeItem("user");
     window.location.href = "/";
 }
@@ -53,4 +56,16 @@ export const validate = (field,validators,value) => {
         ...validators,
         [field]: validation
     };
+}
+export function deDiplicateArray(arr, key) {
+  const seen = new Set();
+  return arr.filter(item => {
+    const identifier = item[key];
+    if (seen.has(identifier)) {
+      return false;
+    } else {
+      seen.add(identifier);
+      return true;
+    }
+  });
 }

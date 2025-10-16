@@ -3,6 +3,16 @@ import './Login.css'
 import { IoMdEye } from "react-icons/io";
 import { usernameRegex, passwordRegex, emailRegex, nameRegex } from '../constants';
 import InputField from '../InputField/InputField';
+import io from 'socket.io-client';
+import { socketEmit, socketOn } from '../socket';
+import { currentUser } from '../utils';
+const socket = io('http://localhost:9000',{
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnection: true
+
+});
+
 export default function Login(props){
     const regexMap = {
         username: usernameRegex,
@@ -44,7 +54,11 @@ export default function Login(props){
                     setInvalidCredCheck(false);
                     const data = await res.json();
                     localStorage.setItem("user", JSON.stringify(data));
-                    props.setUser(data);
+                    console.log(data?.username)
+                    if(data?.username) {
+                        socketEmit('userConnected', data.username);
+                    }
+                    window.location.reload();
                 }
                 else{
                     setInvalidCredCheck(true);

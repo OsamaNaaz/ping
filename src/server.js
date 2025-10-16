@@ -7,6 +7,8 @@ const argon2 = require('argon2');
 const port = 9000;
 const server = http.createServer(app);
 const {Server} = require('socket.io');
+const axios = require('axios');
+
 const io = new Server(server, {
     cors: {
         origin: 'http://localhost:3000',
@@ -94,7 +96,6 @@ app.post('/register', async (req, res) => {
 });
 app.post('/getConversations', async(req,res) => {
     const {username} = req.body;
-    console.log(req.body);
     await Conversation.find({
         participants: { $all: [username] }
     }).then(data => {
@@ -114,7 +115,6 @@ app.post('/getConversations', async(req,res) => {
 });
 app.post('/getMessages', async(req,res) => {
     const {conversationId} = req.body;
-    console.log(req.body);
     await Message.find({convId: conversationId}).sort({timestamp: 1}).then(data => {
         setTimeout(() =>{
 
@@ -124,6 +124,28 @@ app.post('/getMessages', async(req,res) => {
         res.json(err);  
     })
 })
+app.post('/getUser', async(req,res) => {
+    const {username} = req.body;
+    try{
+        const data = await User.findOne({username: username});
+        
+        if(!data){
+            throw new Error("User not found");
+        }
+        const user = {
+            username: data.username,
+            name: data.name,
+            email: data.email,
+            avatarUrl: data.avatarUrl,
+            bio: data.bio,
+            status: data.status
+        }
+        res.status(200).json(user);
+    }
+    catch(err){
+        res.json(err);
+    }
+})  
 app.post('/getUsers', async(req,res) => {
     const {usernames} = req.body;
     try{
@@ -168,7 +190,16 @@ app.post('/searchUsers', async(req,res) => {
         {email: {$regex: searchQuery, $options: 'i'}}
         ]
     }).then(data => {
-        res.json(data);
+        const users = data.map(user => {
+        return{
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            avatarUrl: user.avatarUrl,
+            bio: user.bio,
+            status: user.status
+        }});
+        res.json(users);
     }).catch(err => {
         res.json(err);  
     })
@@ -176,6 +207,13 @@ app.post('/searchUsers', async(req,res) => {
 )
 app.post('/updateUser', async(req,res) => {
     const {_id, username, name, email, bio="", password, currentPassword} = req.body;
+    const updates = {};
+    const allowedFields = ['username', 'name', 'email', 'bio', 'password', 'status', 'avatarUrl', 'twoFactorEnabled', 'roles'];
+    for(const field of allowedFields){
+        if(req.body[field] !== undefined){
+            updates[field] = req.body[field];
+        }
+    }
     try{
         if(currentPassword === undefined || currentPassword.trim() === ""){
             throw new Error("Current password is required");
@@ -198,8 +236,8 @@ app.post('/updateUser', async(req,res) => {
         if(password !== undefined && password.trim() !== ""){
             user.password = password;
         }
-        const updatedUser = await User.findOneAndUpdate({_id: _id}, {username: username, name: name, email: email, bio: bio}, {new: true});
-        res.json(updatedUser);
+        const updatedUser = await User.findOneAndUpdate({_id: _id}, { $set: updates }, {new: true});
+        res.status(200).json(updatedUser);
     }
     catch(err){
         console.log(err);
@@ -231,15 +269,38 @@ app.post('/createConversation', async(req,res) => {
         res.json(err);
     })
 })
+let onlineUsers = {};
+
 
 io.on('connection', (socket) => {
+    socket.on('userConnected', async (username) => {
+        onlineUsers[username] = socket.id;
+        socket.join(username);
+        await User.findOneAndUpdate({username: username}, {status: 'online'}, {new: true});
+        io.emit('onlineUsers', Object.keys(onlineUsers));
+    });
+    socket.on('conversationCreated', (conversationId, participants) => {
+        participants.forEach(participant => {
+            if(onlineUsers[participant]){
+                console.log(`Notifying ${onlineUsers[participant]} + ' ' + ${participant} about new conversation ${conversationId}`);
+                io.to(onlineUsers[participant]).emit('newConversation', conversationId);
+            }
+        });
+    });
     socket.on('joinConversation', (conversationId) => {
-        console.log(`User joined conversation ${conversationId}`);
         socket.join(conversationId);
+    });
+    socket.on('joinRoom', (room) => {
+        socket.join(room);
+    });
+    socket.on('leaveConversation', (conversationId) => {
+        console.log('Leaving conversation:', conversationId);
+        socket.leave(conversationId);
     });
     socket.on('sendMessage', async (message) => {
         await Message.create(message);
         io.to(message.convId).emit('receiveMessage', message);
+        io.to(message.recipient).emit('recieveNotification', {sender: message.sender, time: message.timestamp, conversationId: message.convId});
     });
     socket.on('typing', (data) => {
         socket.broadcast.emit('typing', data);
@@ -247,8 +308,13 @@ io.on('connection', (socket) => {
     socket.on('stopTyping', (data) => {
         socket.broadcast.emit('stopTyping', data);
     })
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
+    socket.on('disconnectUser', (username) => {
+        delete onlineUsers[username];
+        User.findOneAndUpdate({username: username}, {status: 'offline'}, {new: true}).then(data => {
+        }).catch(err => {
+            console.log(err);
+        })
+        io.emit('onlineUsers', Object.keys(onlineUsers));
     });
 })
 server.listen(9000, () => {
